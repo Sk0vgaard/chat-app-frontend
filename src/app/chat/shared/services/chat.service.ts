@@ -16,6 +16,11 @@ export class ChatService {
 
   messageListener(): Observable<string> {
     return this.socket
-      .fromEvent<string>('messages');
+      .fromEvent<string>('newMessage');
+  }
+
+  getAllMessages(): Observable<string[]> {
+    return this.socket
+      .fromEvent<string[]>('allMessages');
   }
 }

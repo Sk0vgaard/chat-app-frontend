@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ChatService } from '../shared/services/chat.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chat',
@@ -19,11 +19,24 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.messageListener();
+    this.getAllMessages();
+  }
+
+  private messageListener(): void {
     this.chatService.messageListener()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(message => {
         this.messages.push(message);
       });
+  }
+
+  private getAllMessages(): void {
+    this.chatService.getAllMessages()
+      .pipe(take(1))
+      .subscribe(messages => {
+        this.messages = messages;
+    });
   }
 
   sendMessage(): void {
