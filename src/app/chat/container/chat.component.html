@@ -1,12 +1,30 @@
-<h1>Hello chat app</h1>
+<div *ngIf="nickname; else nicknameNotFound">
+  <label>
+    Message:
+    <input type="text" [formControl]="message">
+  </label>
 
-<label>
-  Message:
-  <input type="text" [formControl]="message">
-</label>
+  <button (click)="sendMessage()">Send message</button>
 
-<button (click)="sendMessage()">Send message</button>
+  <h4 *ngFor="let message of messages">
+    {{message}}
+  </h4>
+</div>
 
-<h4 *ngFor="let message of messages">
-  {{message}}
-</h4>
+<ng-template #nicknameNotFound>
+  <div>
+    <label>
+      Enter nickname:
+      <input type="text" [formControl]="nicknameFormControl">
+    </label>
+    <button (click)="addNickname()">Submit</button>
+  </div>
+</ng-template>
+
+<div *ngIf="clients$ | async as clients">
+  <ol>
+    <li *ngFor="let client of clients">
+      {{client}}
+    </li>
+  </ol>
+</div>

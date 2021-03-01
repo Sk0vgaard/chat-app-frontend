@@ -14,13 +14,30 @@ export class ChatService {
     this.socket.emit('message', message);
   }
 
+  getAllMessages(): Observable<string[]> {
+    return this.socket
+      .fromEvent<string[]>('allMessages');
+  }
+
   messageListener(): Observable<string> {
     return this.socket
       .fromEvent<string>('newMessage');
   }
 
-  getAllMessages(): Observable<string[]> {
+  clientListener(): Observable<string[]> {
     return this.socket
-      .fromEvent<string[]>('allMessages');
+      .fromEvent<string[]>('clients');
+  }
+
+  sendNickname(nickname: string): void {
+    this.socket.emit('nickname', nickname);
+  }
+
+  connect(): void {
+    this.socket.connect();
+  }
+
+  disconnect(): void {
+    this.socket.disconnect();
   }
 }
