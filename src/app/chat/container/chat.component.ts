@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { ChatService } from '../shared/services/chat.service';
 import { Observable, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
+import { ChatClient } from '../shared/chat-client.model';
 
 @Component({
   selector: 'app-chat',
@@ -16,7 +17,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   message = new FormControl('');
   unsubscribe$ = new Subject();
   nickname: string | undefined;
-  clients$: Observable<string[]> | undefined;
+  clients$: Observable<ChatClient[]> | undefined;
 
   constructor(private chatService: ChatService) {
   }
