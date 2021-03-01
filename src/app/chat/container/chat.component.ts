@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ChatService } from '../shared/services/chat.service';
 import { Observable, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { ChatClient } from '../shared/chat-client.model';
 import { ChatMessage } from '../shared/chat-message.model';
 
@@ -17,8 +17,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   nicknameFormControl = new FormControl('');
   message = new FormControl('');
   unsubscribe$ = new Subject();
-  nickname: string | undefined;
   clients$: Observable<ChatClient[]> | undefined;
+  chatClient: ChatClient | undefined;
 
   constructor(private chatService: ChatService) {
   }
@@ -26,7 +26,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.clients$ = this.chatService.clientListener();
     this.messageListener();
-    this.getAllMessages();
     this.chatService.connect();
   }
 
@@ -37,7 +36,13 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   addNickname(): void {
     if (this.nicknameFormControl.value) {
-      this.nickname = this.nicknameFormControl.value;
+      this.chatService.welcomeListener()
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        ).subscribe(welcome => {
+          this.messages = welcome.messages;
+          this.chatClient = welcome.client;
+      });
       this.chatService.sendNickname(this.nicknameFormControl.value);
     }
   }
@@ -47,14 +52,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(message => {
         this.messages.push(message);
-      });
-  }
-
-  private getAllMessages(): void {
-    this.chatService.getAllMessages()
-      .pipe(take(1))
-      .subscribe(messages => {
-        this.messages = messages;
       });
   }
 

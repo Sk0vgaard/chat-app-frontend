@@ -3,6 +3,7 @@ import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
 import { ChatClient } from '../chat-client.model';
 import { ChatMessage } from '../chat-message.model';
+import { WelcomeDto } from '../welcome.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,11 @@ export class ChatService {
   clientListener(): Observable<ChatClient[]> {
     return this.socket
       .fromEvent<ChatClient[]>('clients');
+  }
+
+  welcomeListener(): Observable<WelcomeDto> {
+    return this.socket
+      .fromEvent<WelcomeDto>('welcome');
   }
 
   sendNickname(nickname: string): void {
