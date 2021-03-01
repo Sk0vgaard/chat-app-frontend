@@ -10,16 +10,13 @@ import { WelcomeDto } from '../welcome.dto';
 })
 export class ChatService {
 
+  chatClient: ChatClient | undefined;
+
   constructor(private socket: Socket) {
   }
 
   sendMessage(message: string): void {
     this.socket.emit('message', message);
-  }
-
-  getAllMessages(): Observable<ChatMessage[]> {
-    return this.socket
-      .fromEvent<ChatMessage[]>('allMessages');
   }
 
   messageListener(): Observable<ChatMessage> {
