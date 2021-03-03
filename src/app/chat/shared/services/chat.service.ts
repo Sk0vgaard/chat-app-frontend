@@ -34,6 +34,11 @@ export class ChatService {
       .fromEvent<WelcomeDto>('welcome');
   }
 
+  errorListener(): Observable<string> {
+    return this.socket
+      .fromEvent<string>('error');
+  }
+
   sendNickname(nickname: string): void {
     this.socket.emit('nickname', nickname);
   }

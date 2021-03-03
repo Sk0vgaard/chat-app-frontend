@@ -11,6 +11,7 @@ import { ChatMessage } from '../shared/chat-message.model';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
+
 export class ChatComponent implements OnInit, OnDestroy {
 
   messages: ChatMessage[] = [];
@@ -19,12 +20,14 @@ export class ChatComponent implements OnInit, OnDestroy {
   unsubscribe$ = new Subject();
   clients$: Observable<ChatClient[]> | undefined;
   chatClient: ChatClient | undefined;
+  error$: Observable<string> | undefined;
 
   constructor(private chatService: ChatService) {
   }
 
   ngOnInit(): void {
     this.clients$ = this.chatService.clientListener();
+    this.error$ = this.chatService.errorListener();
     this.messageListener();
   }
 
