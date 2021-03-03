@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
-import { ChatClient } from '../chat-client.model';
-import { ChatMessage } from '../chat-message.model';
-import { WelcomeDto } from '../welcome.dto';
+import { ChatClient } from '../models/chat-client.model';
+import { ChatMessage } from '../models/chat-message.model';
+import { WelcomeDto } from '../../api/dtos/welcome.dto';
 
 @Injectable({
   providedIn: 'root'

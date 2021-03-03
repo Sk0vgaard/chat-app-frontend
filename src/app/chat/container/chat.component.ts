@@ -3,8 +3,8 @@ import { FormControl } from '@angular/forms';
 import { ChatService } from '../shared/services/chat.service';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { ChatClient } from '../shared/chat-client.model';
-import { ChatMessage } from '../shared/chat-message.model';
+import { ChatClient } from '../shared/models/chat-client.model';
+import { ChatMessage } from '../shared/models/chat-message.model';
 
 @Component({
   selector: 'app-chat',
