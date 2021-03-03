@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ChatService } from '../shared/services/chat.service';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { ChatClient } from '../shared/chat-client.model';
 import { ChatMessage } from '../shared/chat-message.model';
 
@@ -16,8 +16,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   messages: ChatMessage[] = [];
   nicknameFormControl = new FormControl('');
-  message = new FormControl('');
+  messageFormControl = new FormControl('');
   unsubscribe$ = new Subject();
+  clientsTyping: ChatClient[] = [];
   clients$: Observable<ChatClient[]> | undefined;
   chatClient: ChatClient | undefined;
   error$: Observable<string> | undefined;
@@ -28,12 +29,33 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.clients$ = this.chatService.clientListener();
     this.error$ = this.chatService.errorListener();
+    this.sendTyping();
+    this.chatService.typingListener()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((chatClient) => {
+        if (chatClient.typing && !this.clientsTyping.find((client) => client.id === client.id)) {
+          this.clientsTyping.push(chatClient);
+        } else {
+          this.clientsTyping = this.clientsTyping.filter((client) => client.id !== chatClient.id);
+        }
+      });
     this.messageListener();
   }
 
+  private sendTyping(): void {
+    this.messageFormControl.valueChanges
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500)
+      )
+      .subscribe((value) => {
+        this.chatService.sendTyping(value.length > 0);
+      });
+  }
+
   sendMessage(): void {
-    console.log(this.message.value);
-    this.chatService.sendMessage(this.message.value);
+    console.log(this.messageFormControl.value);
+    this.chatService.sendMessage(this.messageFormControl.value);
   }
 
   addNickname(): void {

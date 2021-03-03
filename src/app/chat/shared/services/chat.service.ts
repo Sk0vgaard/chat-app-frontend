@@ -39,8 +39,17 @@ export class ChatService {
       .fromEvent<string>('error');
   }
 
+  typingListener(): Observable<ChatClient> {
+    return this.socket
+      .fromEvent<ChatClient>('clientTyping');
+  }
+
   sendNickname(nickname: string): void {
     this.socket.emit('nickname', nickname);
+  }
+
+  sendTyping(typing: boolean): void {
+    this.socket.emit('typing', typing);
   }
 
   connect(): void {
