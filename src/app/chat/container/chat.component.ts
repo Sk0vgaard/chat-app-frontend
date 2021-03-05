@@ -30,16 +30,20 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.clients$ = this.chatService.clientListener();
     this.error$ = this.chatService.errorListener();
     this.sendTyping();
+    this.typingListener();
+    this.messageListener();
+  }
+
+  private typingListener(): void {
     this.chatService.typingListener()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((chatClient) => {
-        if (chatClient.typing && !this.clientsTyping.find((client) => client.id === client.id)) {
+        if (chatClient.typing && !this.clientsTyping.find((client) => client.id === chatClient.id)) {
           this.clientsTyping.push(chatClient);
         } else {
           this.clientsTyping = this.clientsTyping.filter((client) => client.id !== chatClient.id);
         }
       });
-    this.messageListener();
   }
 
   private sendTyping(): void {
@@ -54,8 +58,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   sendMessage(): void {
-    console.log(this.messageFormControl.value);
     this.chatService.sendMessage(this.messageFormControl.value);
+    this.messageFormControl.patchValue('');
   }
 
   addNickname(): void {
