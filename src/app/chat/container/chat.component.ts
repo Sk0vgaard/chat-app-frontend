@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ChatService } from '../shared/services/chat.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { ChatClient } from '../shared/models/chat-client.model';
 import { ChatMessage } from '../shared/models/chat-message.model';
@@ -19,6 +19,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   messageFormControl = new FormControl('');
   unsubscribe$ = new Subject();
   clientsTyping: ChatClient[] = [];
+  clientsOnline: Subscription | undefined;
   clients$: Observable<ChatClient[]> | undefined;
   chatClient: ChatClient | undefined;
   error$: Observable<string> | undefined;
@@ -28,6 +29,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.clients$ = this.chatService.clientListener();
+    this.clientsOnline = this.clients$.subscribe(result => result.length);
     this.error$ = this.chatService.errorListener();
     this.sendTyping();
     this.typingListener();
