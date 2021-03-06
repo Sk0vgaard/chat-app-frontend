@@ -1,46 +1,68 @@
-<div>
-  <div *ngIf="error$ | async as error" style="color: red">
-    {{error}}
+<div *ngIf="error$ | async as error" style="color: red">
+  {{error}}
+</div>
+
+<div *ngIf="chatClient; else NicknameNotSet" fxLayout="row" fxFlex style="padding: 30px" fxLayoutGap="10px">
+  <div *ngIf="clients$ | async as clients" fxLayout="column" fxFlex="20">
+    <mat-card fxFlex>
+      <mat-card-header>
+        <h4>Clients online ({{clients.length}})</h4>
+      </mat-card-header>
+      <mat-card-content>
+        <ul>
+          <li *ngFor="let client of clients">
+            {{client.nickname}}
+          </li>
+        </ul>
+      </mat-card-content>
+    </mat-card>
   </div>
-
-  <div *ngIf="chatClient; else NicknameNotSet">
-    <h5>Hello {{chatClient.nickname}}</h5>
-    <label>
-      Message:
-      <input type="text" [formControl]="messageFormControl">
-    </label>
-
-    <button (click)="sendMessage()" mat-raised-button color="primary">Send message</button>
-
-    <h5 *ngIf="clientsTyping.length > 0"
-        style="color: grey">
-    <span *ngFor="let client of clientsTyping; let i = index">
-      {{client.nickname}}
-      <span *ngIf="clientsTyping.length - 1 > i">, </span>
-    </span>
-      is typing...
-    </h5>
-
-    <h4 *ngFor="let chatMessage of messages">
-      {{chatMessage.sender.nickname}}: {{chatMessage.message}}
-    </h4>
-  </div>
-
-  <ng-template #NicknameNotSet>
-    <div>
-      <label>
-        Enter nickname:
-        <input type="text" [formControl]="nicknameFormControl">
-      </label>
-      <button (click)="addNickname()" mat-raised-button color="primary">Submit</button>
-    </div>
-  </ng-template>
-
-  <div *ngIf="clients$ | async as clients">
-    <ol>
-      <li *ngFor="let client of clients">
-        {{client.nickname}}
-      </li>
-    </ol>
+  <div fxLayout="column" fxFlex="80">
+    <mat-card fxFlex fxLayout="column">
+      <mat-card-header>
+        <h5>Welcome {{chatClient.nickname}}</h5>
+      </mat-card-header>
+      <mat-card-content fxFlex>
+        <h4 *ngFor="let chatMessage of messages">
+          {{chatMessage.sender.nickname}}: {{chatMessage.message}}
+        </h4>
+      </mat-card-content>
+      <div>
+        <span *ngIf="clientsTyping.length > 0" style="color: grey">
+            <span *ngFor="let client of clientsTyping; let i = index">
+              {{client.nickname}}
+              <span *ngIf="clientsTyping.length - 1 > i">, </span>
+            </span>
+            is typing
+            <span class="one">.</span><span class="two">.</span><span class="three">.</span>
+          </span>
+      </div>
+      <mat-card-actions>
+        <label>
+          Message:
+          <input type="text" [formControl]="messageFormControl">
+        </label>
+        <button (click)="sendMessage()" mat-raised-button color="primary">Send message</button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </div>
+
+<ng-template #NicknameNotSet>
+  <div fxLayout="row" fxFlex fxLayoutAlign="center center">
+    <mat-card fxFlex="30">
+      <mat-card-header fxLayoutAlign="center top">
+        <mat-card-title>Welcome to Skovgaard's chat app</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field class="example-form-field" fxFlex>
+          <mat-label>Nickname</mat-label>
+          <input matInput type="text" [formControl]="nicknameFormControl">
+          <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="addNickname()">
+            <mat-icon fontSet="material-icons-outlined">send</mat-icon>
+          </button>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ng-template>

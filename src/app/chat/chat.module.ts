@@ -5,6 +5,12 @@ import { ChatRoutingModule } from './chat-routing.module';
 import { ChatComponent } from './container/chat.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatCardModule } from '@angular/material/card';
+import { SharedModule } from '../shared/shared.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -15,7 +21,15 @@ import { MatButtonModule } from '@angular/material/button';
     CommonModule,
     ChatRoutingModule,
     ReactiveFormsModule,
-    MatButtonModule
+    FlexLayoutModule,
+    SharedModule,
+
+    // Angular material modules
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule
   ]
 })
 export class ChatModule {
