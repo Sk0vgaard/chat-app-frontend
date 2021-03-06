@@ -1,5 +1,5 @@
 <div>
-  <div *ngIf="error$ | async as error" style="color: darkred">
+  <div *ngIf="error$ | async as error" style="color: red">
     {{error}}
   </div>
 
@@ -10,7 +10,7 @@
       <input type="text" [formControl]="messageFormControl">
     </label>
 
-    <button (click)="sendMessage()">Send message</button>
+    <button (click)="sendMessage()" mat-raised-button color="primary">Send message</button>
 
     <h5 *ngIf="clientsTyping.length > 0"
         style="color: grey">
@@ -32,7 +32,7 @@
         Enter nickname:
         <input type="text" [formControl]="nicknameFormControl">
       </label>
-      <button (click)="addNickname()">Submit</button>
+      <button (click)="addNickname()" mat-raised-button color="primary">Submit</button>
     </div>
   </ng-template>
 
