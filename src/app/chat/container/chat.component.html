@@ -1,4 +1,4 @@
-<div *ngIf="error$ | async as error" style="color: red">
+<div *ngIf="error$ | async as error" class="warn-color">
   {{error}}
 </div>
 
@@ -28,7 +28,7 @@
         </h4>
       </mat-card-content>
       <div>
-        <span *ngIf="clientsTyping.length > 0" style="color: grey">
+        <span *ngIf="clientsTyping.length > 0" class="primary-color">
             <span *ngFor="let client of clientsTyping; let i = index">
               {{client.nickname}}
               <span *ngIf="clientsTyping.length - 1 > i">, </span>
