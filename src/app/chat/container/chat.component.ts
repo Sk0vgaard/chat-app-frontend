@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ChatService } from '../shared/services/chat.service';
 import { Observable, Subject } from 'rxjs';
@@ -12,7 +12,9 @@ import { ChatMessage } from '../shared/models/chat-message.model';
   styleUrls: ['./chat.component.scss']
 })
 
-export class ChatComponent implements OnInit, OnDestroy {
+export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
+
+  @ViewChild('scrollBottom') private scrollBottom!: ElementRef;
 
   messages: ChatMessage[] = [];
   nicknameFormControl = new FormControl('');
@@ -27,6 +29,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.scrollToBottom();
     this.clients$ = this.chatService.clientListener();
     this.error$ = this.chatService.errorListener();
     this.sendTyping();
@@ -84,6 +87,16 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (this.chatService.chatClient) {
       this.chatService.sendNickname(this.chatService.chatClient.nickname);
     }
+  }
+
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom(): void {
+    try {
+      this.scrollBottom.nativeElement.scrollTop = this.scrollBottom.nativeElement.scrollHeight;
+    } catch (err) { }
   }
 
   ngOnDestroy(): void {
