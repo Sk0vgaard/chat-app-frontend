@@ -10,7 +10,6 @@ import { WelcomeDto } from '../../api/dtos/welcome.dto';
 })
 export class ChatService {
 
-  chatClient: ChatClient | undefined;
   private currentNickname: string | undefined;
   private welcomeDto: WelcomeDto | undefined;
 
@@ -20,6 +19,10 @@ export class ChatService {
 
   getMessages(): ChatMessage[] | undefined {
     return this.welcomeDto?.messages;
+  }
+
+  getCurrentNickname(): string | undefined {
+    return this.currentNickname;
   }
 
   getChatClient(): ChatClient | undefined {
@@ -58,10 +61,6 @@ export class ChatService {
   sendNickname(nickname: string): void {
     this.currentNickname = nickname;
     this.socket.emit('nickname', nickname);
-  }
-
-  getCurrentNickname(): string | undefined {
-    return this.currentNickname;
   }
 
   sendTyping(typing: boolean): void {

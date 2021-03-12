@@ -2,8 +2,8 @@ import { AfterViewChecked, Component, ElementRef, EventEmitter, Input, OnDestroy
 import { ChatMessage } from '../../shared/models/chat-message.model';
 import { FormControl } from '@angular/forms';
 import { ChatClient } from '../../shared/models/chat-client.model';
-import { Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chat-view',
@@ -20,7 +20,7 @@ export class ChatViewComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Output() newMessageEvent = new EventEmitter<string>();
   @Output() isTypingEvent = new EventEmitter<boolean>();
   messageFormControl = new FormControl('');
-  unsubscribe$ = new Subject();
+  subscription: Subscription;
   typing: boolean | undefined;
   @ViewChild('scrollBottom') private scrollBottom!: ElementRef;
 
@@ -49,14 +49,13 @@ export class ChatViewComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.subscription.unsubscribe();
   }
 
   private isTyping(): void {
+    this.subscription =
       this.messageFormControl.valueChanges
         .pipe(
-          takeUntil(this.unsubscribe$),
           debounceTime(500),
           distinctUntilChanged()
         )
