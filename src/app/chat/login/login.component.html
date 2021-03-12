@@ -1,0 +1,21 @@
+<div fxLayout="row" fxFlex fxLayoutAlign="center center">
+  <mat-card>
+    <mat-card-header fxLayoutAlign="center top">
+      <mat-card-title>Welcome to Skovgaard's chat app</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field fxFlex>
+        <mat-label>Nickname</mat-label>
+        <input matInput type="text" [formControl]="nicknameFormControl" (keyup.enter)="addNewNickname()">
+        <button mat-button matSuffix mat-icon-button (click)="addNewNickname()">
+          <mat-icon fontSet="material-icons-outlined">send</mat-icon>
+        </button>
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-footer class="warn-color" fxLayoutAlign="center center">
+        <div *ngIf="error$ | async as error">
+          {{error}}
+        </div>
+    </mat-card-footer>
+  </mat-card>
+</div>

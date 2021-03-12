@@ -1,8 +1,8 @@
-import { AfterViewChecked, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ChatService } from '../shared/services/chat.service';
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { ChatClient } from '../shared/models/chat-client.model';
 import { ChatMessage } from '../shared/models/chat-message.model';
 
@@ -12,32 +12,44 @@ import { ChatMessage } from '../shared/models/chat-message.model';
   styleUrls: ['./chat.component.scss']
 })
 
-export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
-
-  @ViewChild('scrollBottom') private scrollBottom!: ElementRef;
+export class ChatComponent implements OnInit, OnDestroy {
 
   messages: ChatMessage[] = [];
   nicknameFormControl = new FormControl('');
-  messageFormControl = new FormControl('');
   unsubscribe$ = new Subject();
   clientsTyping: ChatClient[] = [];
   clients$: Observable<ChatClient[]> | undefined;
   chatClient: ChatClient | undefined;
-  error$: Observable<string> | undefined;
 
   constructor(private chatService: ChatService) {
   }
 
   ngOnInit(): void {
-    this.scrollToBottom();
+    this.messages = this.chatService.getMessages() ?? [];
+    this.chatClient = this.chatService.getChatClient();
     this.clients$ = this.chatService.clientListener();
-    this.error$ = this.chatService.errorListener();
-    this.sendTyping();
     this.typingListener();
     this.messageListener();
   }
 
-  private typingListener(): void {
+  sendMessage(newMessageEvent: string): void {
+    this.chatService.sendMessage(newMessageEvent);
+  }
+
+  messageListener(): void {
+    this.chatService.messageListener()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(message => {
+        this.messages?.push(message);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  typingListener(): void {
     this.chatService.typingListener()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((chatClient) => {
@@ -49,58 +61,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       });
   }
 
-  private sendTyping(): void {
-    this.messageFormControl.valueChanges
-      .pipe(
-        takeUntil(this.unsubscribe$),
-        debounceTime(500)
-      )
-      .subscribe((value) => {
-        this.chatService.sendTyping(value.length > 0);
-      });
-  }
-
-  sendMessage(): void {
-    this.chatService.sendMessage(this.messageFormControl.value);
-    this.messageFormControl.patchValue('');
-  }
-
-  addNickname(): void {
-    if (this.nicknameFormControl.value) {
-      this.chatService.sendNickname(this.nicknameFormControl.value);
-    }
-  }
-
-  messageListener(): void {
-    this.chatService.messageListener()
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(message => {
-        this.messages.push(message);
-      });
-    this.chatService.welcomeListener()
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      ).subscribe(welcome => {
-      this.messages = welcome.messages;
-      this.chatClient = this.chatService.chatClient = welcome.client;
-    });
-    if (this.chatService.chatClient) {
-      this.chatService.sendNickname(this.chatService.chatClient.nickname);
-    }
-  }
-
-  ngAfterViewChecked(): void {
-    this.scrollToBottom();
-  }
-
-  scrollToBottom(): void {
-    try {
-      this.scrollBottom.nativeElement.scrollTop = this.scrollBottom.nativeElement.scrollHeight;
-    } catch (err) { }
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+  sendTyping(isTyping: boolean): void {
+    this.chatService.sendTyping(isTyping);
   }
 }

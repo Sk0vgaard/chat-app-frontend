@@ -13,11 +13,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatLineModule } from '@angular/material/core';
+import { LoginComponent } from './login/login.component';
+import { ChatViewComponent } from './container/chat-view/chat-view.component';
 
 
 @NgModule({
   declarations: [
-    ChatComponent
+    ChatComponent,
+    LoginComponent,
+    ChatViewComponent
   ],
   imports: [
     CommonModule,

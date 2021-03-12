@@ -11,8 +11,19 @@ import { WelcomeDto } from '../../api/dtos/welcome.dto';
 export class ChatService {
 
   chatClient: ChatClient | undefined;
+  private currentNickname: string | undefined;
+  private welcomeDto: WelcomeDto | undefined;
 
   constructor(private socket: Socket) {
+    this.welcomeListener().subscribe((welcomeDto) => this.welcomeDto = welcomeDto);
+  }
+
+  getMessages(): ChatMessage[] | undefined {
+    return this.welcomeDto?.messages;
+  }
+
+  getChatClient(): ChatClient | undefined {
+    return this.welcomeDto?.client;
   }
 
   sendMessage(message: string): void {
@@ -45,7 +56,12 @@ export class ChatService {
   }
 
   sendNickname(nickname: string): void {
+    this.currentNickname = nickname;
     this.socket.emit('nickname', nickname);
+  }
+
+  getCurrentNickname(): string | undefined {
+    return this.currentNickname;
   }
 
   sendTyping(typing: boolean): void {
