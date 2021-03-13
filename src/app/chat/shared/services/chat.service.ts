@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ChatClient } from '../models/chat-client.model';
 import { ChatMessage } from '../models/chat-message.model';
 import { WelcomeDto } from '../../api/dtos/welcome.dto';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,7 @@ export class ChatService {
   }
 
   clientListener(): Observable<ChatClient[]> {
+    console.log('getting clients');
     return this.socket
       .fromEvent<ChatClient[]>('clients');
   }
@@ -51,6 +53,25 @@ export class ChatService {
   errorListener(): Observable<string> {
     return this.socket
       .fromEvent<string>('error');
+  }
+
+  connectListener(): Observable<string> {
+    return this.socket
+      .fromEvent<string>('connect').pipe(
+        map(() => {
+          return this.socket.ioSocket.id;
+        })
+      );
+  }
+
+  disconnectListener(): Observable<string> {
+    return this.socket
+      .fromEvent<string>('disconnect')
+      .pipe(
+        map(() => {
+          return this.socket.ioSocket.id;
+        })
+      );
   }
 
   typingListener(): Observable<ChatClient> {

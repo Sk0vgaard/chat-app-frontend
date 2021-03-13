@@ -16,6 +16,9 @@
         <div *ngIf="error$ | async as error">
           {{error}}
         </div>
+        <div *ngIf="!socketId">
+          You are not connected..!
+        </div>
     </mat-card-footer>
   </mat-card>
 </div>
