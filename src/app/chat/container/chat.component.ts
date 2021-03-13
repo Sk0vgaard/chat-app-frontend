@@ -29,6 +29,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.clients$ = this.chatService.clientListener();
     this.messageListener();
     this.typingListener();
+    console.log('init chat');
   }
 
   sendMessage(newMessageEvent: string): void {
@@ -45,6 +46,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    console.log('destroying chat');
   }
 
   typingListener(): void {

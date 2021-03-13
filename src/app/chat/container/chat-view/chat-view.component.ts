@@ -30,6 +30,7 @@ export class ChatViewComponent implements OnInit, OnDestroy, AfterViewChecked {
   ngOnInit(): void {
     this.scrollToBottom();
     this.isTyping();
+    console.log('init chat-view');
   }
 
   ngAfterViewChecked(): void {
@@ -50,6 +51,7 @@ export class ChatViewComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    console.log('destroying chat-view');
   }
 
   private isTyping(): void {
