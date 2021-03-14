@@ -1,10 +1,15 @@
 <div class="app-root" fxLayout="column">
   <div class="app-header">
     <div fxLayout="column" fxFill>
-      <div fxLayout="row" fxLayoutGap="10px">
-        <a routerLink="/">Home</a>
-        <a routerLink="/chats">Go to Chats</a>
-      </div>
+      <nav mat-tab-nav-bar>
+        <a mat-tab-link
+           *ngFor="let link of navLinks"
+           [routerLink]="link.path"
+           routerLinkActive #rla="routerLinkActive"
+           [active]="rla.isActive">
+          {{link.label}}
+        </a>
+      </nav>
     </div>
   </div>
   <div class="app-content" fxFlex>

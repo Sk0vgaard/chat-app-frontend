@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    console.log('destroying chat');
+    console.log('destroying login');
   }
 
   connectListener(): void {
